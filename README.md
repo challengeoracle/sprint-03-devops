@@ -1,6 +1,16 @@
 # Checkpoint 05 - Medix (Sistema de Tickets para Unidades de Saúde)
 
+## Descrição do Projeto
 Este projeto apresenta um microserviço desenvolvido em Java Spring Boot para a gestão de chamados de suporte técnico (tickets) em unidades de saúde (clínicas e hospitais). A solução é integrada ao Azure SQL Database e permite que colaboradores registrem falhas técnicas em equipamentos ou sistemas, com monitoramento de prioridade e status.
+
+## Benefícios da Implantação do Sistema
+
+A implementação deste microserviço em unidades de saúde foca em:
+
+- **Agilidade no Atendimento:** Reduz o tempo de resposta técnica para falhas em equipamentos críticos (ex: monitores de UTI), garantindo a continuidade do cuidado ao paciente.
+- **Gestão de Prioridades:** Permite que a equipa de TI foque nos problemas de maior risco à operação hospitalar através da classificação de urgência.
+- **Transparência Operacional:** Substitui processos manuais por um fluxo digital onde o status do chamado é acompanhado em tempo real por médicos e enfermeiros.
+- **Decisões Baseadas em Dados:** Gera histórico para identificar equipamentos recorrentes em falhas, auxiliando no planeamento de manutenções preventivas.
 
 ---
 

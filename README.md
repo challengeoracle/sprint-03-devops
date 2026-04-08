@@ -142,7 +142,7 @@ Invoke-Sqlcmd -ServerInstance "sql-server-medix-rm559728.database.windows.net" `
 
 1. Gerar o artefato `.jar`
 ```bash
-    .\mvnw clean package -DskipTests
+    mvnw clean package -DskipTests
   ```
 
 ### Executar no Azure Cloud Shell
@@ -169,7 +169,7 @@ https://web-medix-rm559728.azurewebsites.net/api
 
 A interface visual está disponível em:
 ```bash
-`https://web-medix-rm559728.azurewebsites.net/`
+https://web-medix-rm559728.azurewebsites.net/
 ```
 | Método     | Endpoint         | Descrição                                        |
 | :--------- |:-----------------|:-------------------------------------------------|

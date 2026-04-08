@@ -207,7 +207,7 @@ https://web-medix-rm559728.azurewebsites.net/
 
 Demonstração das funcionalidades, interface Thymeleaf e persistência dos dados no Azure SQL:
 
-- [Link para o Vídeo no YouTube](INSERIR A URL DO V[IDEO AQUI])
+- [Link para o Vídeo no YouTube](https://youtu.be/I730krtsdEs)
 
 ---
 

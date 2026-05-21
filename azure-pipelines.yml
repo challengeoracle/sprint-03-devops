@@ -1,0 +1,77 @@
+trigger:
+  - main
+
+resources:
+  - repo: self
+
+variables:
+  # Altere estes valores conforme suas credenciais e recursos criados na Azure
+  azureSubscription: 'Conexao-Azure-DevOps' # Nome da Service Connection criada no Azure DevOps
+  acrName: 'acrmedixrm559728'                # Nome do seu Azure Container Registry (letras minúsculas)
+  imageRepository: 'medix-api'
+  webAppName: 'web-medix-rm559728'           # Nome do seu Web App criado via CLI
+  dockerRegistryServiceConnection: 'Conexao-ACR' # Service Connection para o ACR
+  tag: '$(Build.BuildId)'
+
+stages:
+  # ==========================================
+  # ESTÁGIO DE CI: BUILD E GERAÇÃO DA IMAGEM
+  # ==========================================
+  - stage: Build
+    displayName: 'Estágio de Build e CI'
+    jobs:
+      - job: BuildJavaAndDocker
+        displayName: 'Build JAR & Push Docker Image'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          # Step 1: Configurar a versão correta do Java (Java 21)
+          - task: JavaToolInstaller@0
+            inputs:
+              versionSpec: '21'
+              jdkArchitectureOption: 'x64'
+              jdkSourceOption: 'PreInstalled'
+
+          # Step 2: Compilar a aplicação e gerar o .jar limpando os testes temporariamente
+          - task: Maven@4
+            displayName: 'Compilar aplicação com Maven'
+            inputs:
+              mavenPomFile: 'pom.xml'
+              goals: 'clean package'
+              options: '-DskipTests'
+              publishJUnitResults: false
+              javaHomeOption: 'JDKVersion'
+              jdkVersionOption: '1.21'
+
+          # Step 3: Construir a imagem Docker e enviar para o Azure Container Registry
+          - task: Docker@2
+            displayName: 'Construir e enviar imagem para o ACR'
+            inputs:
+              containerRegistry: '$(dockerRegistryServiceConnection)'
+              repository: '$(imageRepository)'
+              command: 'buildAndPush'
+              Dockerfile: '**/Dockerfile'
+              tags: |
+                $(tag)
+                latest
+
+  # ==========================================
+  # ESTÁGIO DE CD: DEPLOY NO AZURE APP SERVICE
+  # ==========================================
+  - stage: Deploy
+    displayName: 'Estágio de Deploy e CD'
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: DeployToAzure
+        displayName: 'Deploy no Azure Web App'
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          # Atualiza o Web App para puxar a versão mais recente do Container de forma automatizada
+          - task: AzureWebAppContainer@1
+            displayName: 'Deploy da Imagem Docker no Azure App Service'
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              appName: '$(webAppName)'
+              containers: '$(acrName).azurecr.io/$(imageRepository):$(tag)'
